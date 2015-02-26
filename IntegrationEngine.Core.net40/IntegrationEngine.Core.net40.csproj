@@ -47,6 +47,12 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.10.0\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\packages\MySql.Data.6.9.5\lib\net40\MySql.Data.dll</HintPath>
     </Reference>
@@ -97,6 +103,9 @@
     <Compile Include="..\IntegrationEngine.Core\Configuration\IMailConfiguration.cs">
       <Link>IMailConfiguration.cs</Link>
     </Compile>
+    <Compile Include="..\IntegrationEngine.Core\Configuration\IMongoDBConfiguration.cs">
+      <Link>IMongoDBConfiguration.cs</Link>
+    </Compile>
     <Compile Include="..\IntegrationEngine.Core\Configuration\IMySqlConfiguration.cs">
       <Link>IMySqlConfiguration.cs</Link>
     </Compile>
@@ -105,6 +114,9 @@
     </Compile>
     <Compile Include="..\IntegrationEngine.Core\Configuration\MailConfiguration.cs">
       <Link>MailConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\IntegrationEngine.Core\Configuration\MongoDbConfiguration.cs">
+      <Link>MongoDbConfiguration.cs</Link>
     </Compile>
     <Compile Include="..\IntegrationEngine.Core\IntegrationPoint\IIntegrationPoint.cs">
       <Link>IIntegrationPoint.cs</Link>
@@ -148,6 +160,9 @@
     <Compile Include="..\IntegrationEngine.Core\MessageQueue\RabbitMQClient.cs">
       <Link>RabbitMQClient.cs</Link>
     </Compile>
+    <Compile Include="..\IntegrationEngine.Core\MongoDB\MongoClientAdapter.cs">
+      <Link>MongoClientAdapter.cs</Link>
+    </Compile>
     <Compile Include="..\IntegrationEngine.Core\Reports\IDatum.cs">
       <Link>IDatum.cs</Link>
     </Compile>
@@ -184,6 +199,7 @@
     <Compile Include="..\IntegrationEngine.Core\Storage\IRepository.cs">
       <Link>IRepository.cs</Link>
     </Compile>
+    <Compile Include="IMongoDBClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\IntegrationEngine.Core\Configuration\IEngineConfiguration.cs">
       <Link>IEngineConfiguration.cs</Link>

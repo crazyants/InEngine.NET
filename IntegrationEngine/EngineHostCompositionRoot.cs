@@ -23,6 +23,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using IntegrationEngine.Core.ServiceStack;
+using IntegrationEngine.Core.MongoDB;
 
 namespace IntegrationEngine
 {
@@ -156,6 +157,12 @@ namespace IntegrationEngine
                 RegisterConfig(typeof(IJsonServiceConfiguration), typeof(JsonServiceConfiguration), config.IntegrationPointName);
                 Container.RegisterType<IJsonServiceClient, JsonServiceClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
             }
+            if (EngineConfiguration.IntegrationPoints.MongoDB != null)
+                foreach (var config in EngineConfiguration.IntegrationPoints.MongoDB)
+                {
+                    RegisterConfig(typeof(IMongoDBConfiguration), typeof(MongoDBConfiguration), config.IntegrationPointName);
+                    Container.RegisterType<IMongoDBClient, MongoClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
+                }
         }
 
         /// <summary>
