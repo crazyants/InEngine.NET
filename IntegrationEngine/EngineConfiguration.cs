@@ -8,11 +8,14 @@ namespace IntegrationEngine
 {
     public class EngineConfiguration : JsonConfiguration, IEngineConfiguration
     {
-        public EngineConfiguration() : base("IntegrationEngine.json")
-        {}
-
+        public string JobProcessorMessageQueueName { get; set; }
+        public string JobTriggerRepositoryName { get; set; }
         public WebApiConfiguration WebApi { get; set; }
         public NLogAdapterConfiguration NLogAdapter { get; set; }
         public IntegrationPointConfigurations IntegrationPoints { get; set; }
+
+        public EngineConfiguration()
+            : base("IntegrationEngine.json")
+        { }
     }
 }

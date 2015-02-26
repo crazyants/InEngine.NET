@@ -1,4 +1,6 @@
 ﻿{
+    "JobProcessorMessageQueueName": "DefaultRabbitMQ",
+    "JobTriggerRepositoryName": "DefaultElasticsearch",
     "WebApi": {
         "HostName": "localhost",
         "Port": 9001,

@@ -52,9 +52,8 @@ namespace IntegrationEngine.Tests
         public void ShouldSetupMessageQueueListener()
         {
             Subject.LoadConfiguration();
-            var configName = "DefaultRabbitMQ";
-            Subject.Container.RegisterType<IRabbitMQConfiguration, RabbitMQConfiguration>(configName,
-                new InjectionConstructor(new ResolvedParameter<IEngineConfiguration>(), configName));
+            Subject.Container.RegisterType<IRabbitMQConfiguration, RabbitMQConfiguration>(Subject.JobProcessorMessageQueueName,
+                new InjectionConstructor(new ResolvedParameter<IEngineConfiguration>(), Subject.JobProcessorMessageQueueName));
 
             Subject.SetupMessageQueueListenerManager();
 
@@ -122,6 +121,12 @@ namespace IntegrationEngine.Tests
             Subject.RegisterIntegrationJobs();
 
             Assert.That(Subject.Container.IsRegistered<IntegrationJobStub>(), Is.True);
+        }
+
+        [Test]
+        public void JobProcessorMessageQueueNameShouldCorrespondToAnIntegrationPoint()
+        {
+            Subject.LoadConfiguration();
         }
     }
 }

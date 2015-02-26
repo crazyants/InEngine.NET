@@ -37,6 +37,8 @@ namespace IntegrationEngine
         public bool IsWebApiEnabled { get; set; }
         public bool IsSchedulerEnabled { get; set; }
         public bool IsMessageQueueListenerManagerEnabled { get; set; }
+        public string JobProcessorMessageQueueName { get; set; }
+        public string JobTriggerRepositoryName { get; set; }
 
         public EngineHostCompositionRoot()
         {}
@@ -74,15 +76,30 @@ namespace IntegrationEngine
                 SetupWebApi();
         }
 
+        public void VerifyIntegrationPointConfigurationExists<T>(IList<T> integrationPointConfigList, string integrationPointName, string propertyName)
+            where T : IIntegrationPointConfiguration
+        {
+            if (!integrationPointConfigList.Where(x => x.IntegrationPointName == integrationPointName).Any())
+                throw new Exception(string.Format("{0} ({1}) is not an integration point", propertyName, JobTriggerRepositoryName));
+        }
+
         public void LoadConfiguration()
         {
             try
             {
-                new EngineConfiguration();
+                var config = new EngineConfiguration();
+                JobProcessorMessageQueueName = config.JobProcessorMessageQueueName;
+                JobTriggerRepositoryName = config.JobTriggerRepositoryName;
+                if (JobProcessorMessageQueueName == null)
+                    throw new Exception("JobProcessorMessageQueueName config option should not be null.");
+                if (JobTriggerRepositoryName == null)
+                    throw new Exception("JobTriggerRepositoryName config option should not be null.");
+                VerifyIntegrationPointConfigurationExists(config.IntegrationPoints.RabbitMQ, JobProcessorMessageQueueName, "JobProcessorMessageQueueName");
+                VerifyIntegrationPointConfigurationExists(config.IntegrationPoints.Elasticsearch, JobTriggerRepositoryName, "JobTriggerRepositoryName");
             }
             catch (Exception exception)
             {
-                throw new Exception("Could not read configuration.", exception);
+                throw new Exception("Issue loading configuration.", exception);
             }
             Container.RegisterType<IEngineConfiguration, EngineConfiguration>();
             EngineConfiguration = Container.Resolve<IEngineConfiguration>();
@@ -178,7 +195,7 @@ namespace IntegrationEngine
 
         public void SetupMessageQueueListenerManager()
         {
-            var config = Container.Resolve<IRabbitMQConfiguration>("DefaultRabbitMQ");
+            var config = Container.Resolve<IRabbitMQConfiguration>(JobProcessorMessageQueueName);
             var messageQueueListenerFactory = new MessageQueueListenerFactory(Container, IntegrationJobTypes, config);
             MessageQueueListenerManager = new MessageQueueListenerManager() {
                 MessageQueueListenerFactory = messageQueueListenerFactory,
@@ -193,7 +210,7 @@ namespace IntegrationEngine
         public void SetupEngineScheduler()
         {
             var dispatcher = new Dispatcher() {
-                MessageQueueClient = Container.Resolve<IRabbitMQClient>("DefaultRabbitMQ"),
+                MessageQueueClient = Container.Resolve<IRabbitMQClient>(JobProcessorMessageQueueName),
             };
             var engineScheduler = new EngineScheduler() {
                 Scheduler = StdSchedulerFactory.GetDefaultScheduler(),
@@ -220,7 +237,7 @@ namespace IntegrationEngine
 
         public void SetupElasticsearchRepository()
         {
-            Container.RegisterType<IElasticsearchRepository, ElasticsearchRepository>(new InjectionConstructor(new ResolvedParameter<IElasticClient>("DefaultElasticsearch")));
+            Container.RegisterType<IElasticsearchRepository, ElasticsearchRepository>(new InjectionConstructor(new ResolvedParameter<IElasticClient>(JobTriggerRepositoryName)));
         }
 
         public void SetupRScriptRunner()
