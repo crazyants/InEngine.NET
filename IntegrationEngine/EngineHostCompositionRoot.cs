@@ -16,6 +16,7 @@ using IntegrationEngine.JobProcessor;
 using IntegrationEngine.Scheduler;
 using Microsoft.Practices.ObjectBuilder2;
 using Microsoft.Practices.Unity;
+using MongoDB.Driver;
 using Nest;
 using Quartz;
 using Quartz.Impl;
@@ -40,6 +41,8 @@ namespace IntegrationEngine
         public bool IsMessageQueueListenerManagerEnabled { get; set; }
         public string JobProcessorMessageQueueName { get; set; }
         public string JobTriggerRepositoryName { get; set; }
+        public IRepository<IntegrationEngine.Model.IHasStringId, string> Repository { get; set; }
+
 
         public EngineHostCompositionRoot()
         {}
@@ -66,7 +69,7 @@ namespace IntegrationEngine
             RegisterIntegrationPoints();
             RegisterIntegrationJobs();
             SetupRScriptRunner();
-            SetupElasticsearchRepository();
+            SetupRepository();
             if (IsMessageQueueListenerManagerEnabled) {
                 SetupMessageQueueListenerManager();
                 StartMessageQueueListener();
@@ -77,11 +80,10 @@ namespace IntegrationEngine
                 SetupWebApi();
         }
 
-        public void VerifyIntegrationPointConfigurationExists<T>(IList<T> integrationPointConfigList, string integrationPointName, string propertyName)
+        public bool DoesIntegrationPointConfigurationExist<T>(IList<T> integrationPointConfigList, string integrationPointName)
             where T : IIntegrationPointConfiguration
         {
-            if (!integrationPointConfigList.Where(x => x.IntegrationPointName == integrationPointName).Any())
-                throw new Exception(string.Format("{0} ({1}) is not an integration point", propertyName, JobTriggerRepositoryName));
+            return integrationPointConfigList.Where(x => x.IntegrationPointName == integrationPointName).Any();
         }
 
         public void LoadConfiguration()
@@ -95,8 +97,11 @@ namespace IntegrationEngine
                     throw new Exception("JobProcessorMessageQueueName config option should not be null.");
                 if (JobTriggerRepositoryName == null)
                     throw new Exception("JobTriggerRepositoryName config option should not be null.");
-                VerifyIntegrationPointConfigurationExists(config.IntegrationPoints.RabbitMQ, JobProcessorMessageQueueName, "JobProcessorMessageQueueName");
-                VerifyIntegrationPointConfigurationExists(config.IntegrationPoints.Elasticsearch, JobTriggerRepositoryName, "JobTriggerRepositoryName");
+                if (!DoesIntegrationPointConfigurationExist(config.IntegrationPoints.RabbitMQ, JobProcessorMessageQueueName))
+                    throw new Exception(string.Format("JobProcessorMessageQueueName ({0}) is not an integration point", JobProcessorMessageQueueName));
+                if (!DoesIntegrationPointConfigurationExist(config.IntegrationPoints.Elasticsearch, JobTriggerRepositoryName) &&
+                    !DoesIntegrationPointConfigurationExist(config.IntegrationPoints.Mongo, JobTriggerRepositoryName))
+                    throw new Exception(string.Format("JobTriggerRepositoryName ({0}) is not an integration point", JobTriggerRepositoryName));
             }
             catch (Exception exception)
             {
@@ -157,8 +162,8 @@ namespace IntegrationEngine
                 RegisterConfig(typeof(IJsonServiceConfiguration), typeof(JsonServiceConfiguration), config.IntegrationPointName);
                 Container.RegisterType<IJsonServiceClient, JsonServiceClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
             }
-            if (EngineConfiguration.IntegrationPoints.MongoDB != null)
-                foreach (var config in EngineConfiguration.IntegrationPoints.MongoDB)
+            if (EngineConfiguration.IntegrationPoints.Mongo != null)
+                foreach (var config in EngineConfiguration.IntegrationPoints.Mongo)
                 {
                     RegisterConfig(typeof(IMongoConfiguration), typeof(MongoConfiguration), config.IntegrationPointName);
                     Container.RegisterType<IMongoClient, MongoClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
@@ -225,14 +230,13 @@ namespace IntegrationEngine
                 Dispatcher = dispatcher,
             };
             Container.RegisterInstance<IEngineScheduler>(engineScheduler);
-            var elasticsearchRepository = Container.Resolve<IElasticsearchRepository>();
             var engineSchedulerListener = new EngineSchedulerListener() {
-                ElasticsearchRepository = elasticsearchRepository,
+                Repository = Repository,
             };
             engineScheduler.AddSchedulerListener(engineSchedulerListener);
             engineScheduler.Start();
-            var simpleTriggers = elasticsearchRepository.SelectAll<SimpleTrigger>();
-            var allCronTriggers = elasticsearchRepository.SelectAll<CronTrigger>();
+            var simpleTriggers = Repository.SelectAll<SimpleTrigger>();
+            var allCronTriggers = Repository.SelectAll<CronTrigger>();
             var cronTriggers = allCronTriggers.Where(x => !string.IsNullOrWhiteSpace(x.CronExpressionString));
             foreach (var trigger in simpleTriggers)
                 engineScheduler.ScheduleJobWithTrigger(trigger);
@@ -242,9 +246,18 @@ namespace IntegrationEngine
                 Log.Warn(x => x("Cron expression for trigger ({0}) is null, empty, or whitespace.", cronTrigger.Id));
         }
 
-        public void SetupElasticsearchRepository()
+        public void SetupRepository()
         {
-            Container.RegisterType<IElasticsearchRepository, ElasticsearchRepository>(new InjectionConstructor(new ResolvedParameter<IElasticClient>(JobTriggerRepositoryName)));
+            if (DoesIntegrationPointConfigurationExist(EngineConfiguration.IntegrationPoints.Elasticsearch, JobTriggerRepositoryName))
+            {
+                Container.RegisterType<IElasticsearchRepository, ElasticsearchRepository>(new InjectionConstructor(new ResolvedParameter<IElasticClient>(JobTriggerRepositoryName)));
+                Repository = Container.Resolve<IElasticsearchRepository>(); 
+            }
+            if (DoesIntegrationPointConfigurationExist(EngineConfiguration.IntegrationPoints.Mongo, JobTriggerRepositoryName))
+            {
+                Container.RegisterType<IMongoRepository, MongoRepository>(new InjectionConstructor(new ResolvedParameter<IMongoClient>(JobTriggerRepositoryName)));
+                Repository = Container.Resolve<IMongoRepository>(); 
+            }
         }
 
         public void SetupRScriptRunner()

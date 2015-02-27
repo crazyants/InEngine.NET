@@ -1,5 +1,4 @@
 ﻿using IntegrationEngine.Core.IntegrationPoint;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -11,14 +10,22 @@ using IntegrationEngine.Core.Mongo;
 
 namespace IntegrationEngine.Core.Mongo
 {
-    public class MongoClientAdapter : MongoClient, IMongoClient, IIntegrationPoint<IMongoConfiguration>
+    public class MongoClientAdapter : IMongoClient, IIntegrationPoint<IMongoConfiguration>
     {
-        public MongoClientAdapter() 
-        {}
+        public MongoClient MongoClient { get; set; }
 
-        public MongoClientAdapter(MongoConfiguration mongoDBConfiguration)
-                    : base()
+        public MongoClientAdapter() 
         {
+        }
+
+        public MongoClientAdapter(MongoConfiguration mongoConfiguration)
+        {
+            MongoClient = new MongoClient("mongodb://" + mongoConfiguration.HostName);
+        }
+
+        public MongoDatabase GetDatabase(string name, MongoDatabaseSettings settings = null)
+        {
+            return MongoClient.GetServer().GetDatabase(name);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿{
     "JobProcessorMessageQueueName": "DefaultRabbitMQ",
-    "JobTriggerRepositoryName": "DefaultElasticsearch",
+    "JobTriggerRepositoryName": "ExampleMongo",
     "WebApi": {
         "HostName": "localhost",
         "Port": 9001,
@@ -52,9 +52,9 @@
                 "AlwaysSendBasicAuthHeader": true
             }
         ],
-        "MongoDB": [
+        "Mongo": [
             {
-                "IntegrationPointName": "ExampleMongoDB",
+                "IntegrationPointName": "ExampleMongo",
                 "HostName": "localhost"
             }
         ]

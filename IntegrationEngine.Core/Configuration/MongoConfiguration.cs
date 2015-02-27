@@ -13,7 +13,7 @@ namespace IntegrationEngine.Core.Configuration
         public MongoConfiguration(IEngineConfiguration engineConfiguration, string integrationPointName)
             : this()
         {
-            var config = engineConfiguration.IntegrationPoints.MongoDB.Single(x => x.IntegrationPointName == integrationPointName);
+            var config = engineConfiguration.IntegrationPoints.Mongo.Single(x => x.IntegrationPointName == integrationPointName);
             IntegrationPointName = integrationPointName;
             HostName = config.HostName;
         }

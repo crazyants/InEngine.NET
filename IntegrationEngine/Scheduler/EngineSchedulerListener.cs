@@ -1,6 +1,12 @@
 ﻿using Common.Logging;
 using IntegrationEngine.Core.Storage;
-using Quartz;
+using IntegrationEngine.Model;
+using IQuartzSimpleTrigger = Quartz.ISimpleTrigger;
+using IQuartzTrigger = Quartz.ITrigger;
+using IQuartzJobDetail = Quartz.IJobDetail;
+using QuartzJobKey = Quartz.JobKey;
+using QuartzSchedulerException = Quartz.SchedulerException;
+using QuartzTriggerKey = Quartz.TriggerKey;
 using System;
 using System.Reflection;
 
@@ -8,7 +14,7 @@ namespace IntegrationEngine.Scheduler
 {
     public class EngineSchedulerListener : IEngineSchedulerListener
     {
-        public IElasticsearchRepository ElasticsearchRepository { get; set; }
+        public IRepository<IHasStringId, string> Repository { get; set; }
         public ILog Log { get; set; }
 
         public EngineSchedulerListener()
@@ -16,27 +22,27 @@ namespace IntegrationEngine.Scheduler
             Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         }
 
-        public void JobAdded(IJobDetail jobDetail)
+        public void JobAdded(IQuartzJobDetail jobDetail)
         {
         }
 
-        public void JobDeleted(JobKey jobKey)
+        public void JobDeleted(QuartzJobKey jobKey)
         {
         }
 
-        public void JobPaused(JobKey jobKey)
+        public void JobPaused(QuartzJobKey jobKey)
         {
         }
 
-        public void JobResumed(JobKey jobKey)
+        public void JobResumed(QuartzJobKey jobKey)
         {
         }
 
-        public void JobScheduled(ITrigger trigger)
+        public void JobScheduled(IQuartzTrigger trigger)
         {
         }
 
-        public void JobUnscheduled(TriggerKey triggerKey)
+        public void JobUnscheduled(QuartzTriggerKey triggerKey)
         {
         }
 
@@ -48,7 +54,7 @@ namespace IntegrationEngine.Scheduler
         {
         }
 
-        public void SchedulerError(string msg, SchedulerException cause)
+        public void SchedulerError(string msg, QuartzSchedulerException cause)
         {
         }
 
@@ -76,12 +82,12 @@ namespace IntegrationEngine.Scheduler
         {
         }
 
-        public void TriggerFinalized(ITrigger trigger)
+        public void TriggerFinalized(IQuartzTrigger trigger)
         {
             try
             {
-                if (trigger is ISimpleTrigger)
-                    ElasticsearchRepository.Delete<SimpleTrigger>(trigger.Key.Name);       
+                if (trigger is IQuartzSimpleTrigger)
+                    Repository.Delete<SimpleTrigger>(trigger.Key.Name);       
             }
             catch (Exception exception)
             {
@@ -89,11 +95,11 @@ namespace IntegrationEngine.Scheduler
             }
         }
 
-        public void TriggerPaused(TriggerKey triggerKey)
+        public void TriggerPaused(QuartzTriggerKey triggerKey)
         {
         }
 
-        public void TriggerResumed(TriggerKey triggerKey)
+        public void TriggerResumed(QuartzTriggerKey triggerKey)
         {
         }
 
