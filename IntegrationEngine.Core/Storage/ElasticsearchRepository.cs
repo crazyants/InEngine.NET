@@ -102,12 +102,12 @@ namespace IntegrationEngine.Core.Storage
             return SelectById<TItem>(updateResponse.Id);
         }
 
-        public void Delete<TItem>(string id) where TItem : class
+        public void Delete<TItem>(string id) where TItem : class, Model.IHasStringId
         {
             ElasticClient.Delete<TItem>(x => x.Id(id.ToString()));
         }
 
-        public bool Exists<TItem>(string id) where TItem : class
+        public bool Exists<TItem>(string id) where TItem : class, Model.IHasStringId
         {
             return ElasticClient.DocumentExists<TItem>(x => x.Id(id)).Exists;
         }

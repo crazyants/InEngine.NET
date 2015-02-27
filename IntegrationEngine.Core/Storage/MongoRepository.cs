@@ -1,6 +1,7 @@
 ﻿using Common.Logging;
 using IntegrationEngine.Core.Mongo;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace IntegrationEngine.Core.Storage
     public class MongoRepository : IMongoRepository
     {
         public IMongoClient MongoClient { get; set; }
-        public string DatabaseName { get; set; }
+        public MongoDatabase Db{ get; set; }
 
         public ILog Log { get; set; }
 
@@ -31,40 +32,50 @@ namespace IntegrationEngine.Core.Storage
 
         public IEnumerable<TItem> SelectAll<TItem>() where TItem : class, Model.IHasStringId
         {
-            return MongoClient.GetDatabase("IntegrationEngine")
-                .GetCollection<TItem>(typeof(TItem).Name)
+            return Db.GetCollection<TItem>(typeof(TItem).Name)
                 .AsQueryable<TItem>()
                 .AsEnumerable<TItem>();
         }
 
         public TItem SelectById<TItem>(string id) where TItem : class, Model.IHasStringId
         {
-            throw new NotImplementedException();
+            return Db.GetCollection<TItem>(typeof(TItem).Name).FindOneById(id);
         }
 
         public TItem Insert<TItem>(TItem item) where TItem : class, Model.IHasStringId
         {
-            throw new NotImplementedException();
+            Db.GetCollection<TItem>(typeof(TItem).Name).Insert(item);
+            return SelectById<TItem>(item.Id);
         }
 
         public TItem Update<TItem>(TItem item) where TItem : class, Model.IHasStringId
         {
-            throw new NotImplementedException();
+            return Insert<TItem>(item);
         }
 
-        public void Delete<TItem>(string id) where TItem : class
+        public void Delete<TItem>(string id) where TItem : class, Model.IHasStringId
         {
-            throw new NotImplementedException();
+            Db.GetCollection<TItem>(typeof(TItem).Name).Remove(Query<TItem>.EQ(x => x.Id, id));
         }
 
-        public bool Exists<TItem>(string id) where TItem : class
+        public bool Exists<TItem>(string id) where TItem : class, Model.IHasStringId
         {
-            throw new NotImplementedException();
+            return Db.GetCollection<TItem>(typeof(TItem).Name).FindOneById(id) != null;
         }
 
         public bool IsServerAvailable()
         {
-            throw new NotImplementedException();
+            try
+            {
+                Db.Server.Connect();
+                Db.Server.Disconnect();
+                return true;
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception);
+                return false;
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ namespace IntegrationEngine.Core.Storage
             return db.Entry(item).Entity;
         }
 
-        public void Delete<TItem>(long id) where TItem : class
+        public void Delete<TItem>(long id) where TItem : class, IHasLongId
         {
             TItem existing = db.Set<TItem>().Find(id);
             db.Set<TItem>().Remove(existing);
@@ -58,7 +58,7 @@ namespace IntegrationEngine.Core.Storage
             db.SaveChanges();
         }
 
-        public bool Exists<TItem>(long id) where TItem : class
+        public bool Exists<TItem>(long id) where TItem : class, IHasLongId
         {
             return db.Set<TItem>().Find(id) != null;
         }

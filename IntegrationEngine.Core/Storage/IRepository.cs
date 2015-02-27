@@ -13,8 +13,8 @@ namespace IntegrationEngine.Core.Storage
         TItem SelectById<TItem>(TId id) where TItem : class, THasId;
         TItem Insert<TItem>(TItem item) where TItem : class, THasId;
         TItem Update<TItem>(TItem item) where TItem : class, THasId;
-        void Delete<TItem>(TId id) where TItem : class;
-        bool Exists<TItem>(TId id) where TItem : class;
+        void Delete<TItem>(TId id) where TItem : class, THasId;
+        bool Exists<TItem>(TId id) where TItem : class, THasId;
         bool IsServerAvailable();
     }
 }
