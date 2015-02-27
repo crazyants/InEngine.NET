@@ -4,11 +4,13 @@ using Common.Logging.NLog;
 using IntegrationEngine.Api;
 using IntegrationEngine.Core.Configuration;
 using IntegrationEngine.Core.Elasticsearch;
-using IntegrationEngine.Core.IntegrationPoint;
 using IntegrationEngine.Core.IntegrationJob;
+using IntegrationEngine.Core.IntegrationPoint;
 using IntegrationEngine.Core.Mail;
 using IntegrationEngine.Core.MessageQueue;
+using IntegrationEngine.Core.Mongo;
 using IntegrationEngine.Core.R;
+using IntegrationEngine.Core.ServiceStack;
 using IntegrationEngine.Core.Storage;
 using IntegrationEngine.JobProcessor;
 using IntegrationEngine.Scheduler;
@@ -22,8 +24,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using IntegrationEngine.Core.ServiceStack;
-using IntegrationEngine.Core.MongoDB;
 
 namespace IntegrationEngine
 {
@@ -161,7 +161,7 @@ namespace IntegrationEngine
                 foreach (var config in EngineConfiguration.IntegrationPoints.MongoDB)
                 {
                     RegisterConfig(typeof(IMongoConfiguration), typeof(MongoConfiguration), config.IntegrationPointName);
-                    Container.RegisterType<IMongoDBClient, MongoClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
+                    Container.RegisterType<IMongoClient, MongoClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
                 }
         }
 

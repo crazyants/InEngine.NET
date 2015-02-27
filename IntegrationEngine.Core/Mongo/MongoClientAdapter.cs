@@ -7,10 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IntegrationEngine.Core.Configuration;
+using IntegrationEngine.Core.Mongo;
 
-namespace IntegrationEngine.Core.MongoDB
+namespace IntegrationEngine.Core.Mongo
 {
-    public class MongoClientAdapter : MongoClient, IMongoDBClient, IIntegrationPoint<IMongoConfiguration>
+    public class MongoClientAdapter : MongoClient, IMongoClient, IIntegrationPoint<IMongoConfiguration>
     {
         public MongoClientAdapter() 
         {}

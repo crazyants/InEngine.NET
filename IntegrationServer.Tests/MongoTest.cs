@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace IntegrationServer.Tests
 {
-    public class MongoDBTest
+    public class MongoTest
     {
         [Test]
         public void ShouldInitializeEngine()

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IntegrationEngine.Core.MongoDB
+namespace IntegrationEngine.Core.Mongo
 {
-    public interface IMongoDBClient
+    public interface IMongoClient
     {
     }
 }
