@@ -22,20 +22,20 @@ namespace IntegrationServer
             }
             else
             {
-                Start(args);
+                Start();
                 Console.WriteLine("Press any key to stop...");
                 Console.ReadLine();
                 Stop();
             }
         }
 
-        private static void Start(string[] args)
+        public static void Start(params string[] args)
         {
             EngineHost = new EngineHost(typeof(Program).Assembly);
             EngineHost.Initialize();
         }
 
-        private static void Stop()
+        public static void Stop()
         {
             EngineHost.Dispose();
         }

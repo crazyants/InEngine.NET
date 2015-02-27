@@ -160,7 +160,7 @@ namespace IntegrationEngine
             if (EngineConfiguration.IntegrationPoints.MongoDB != null)
                 foreach (var config in EngineConfiguration.IntegrationPoints.MongoDB)
                 {
-                    RegisterConfig(typeof(IMongoDBConfiguration), typeof(MongoDBConfiguration), config.IntegrationPointName);
+                    RegisterConfig(typeof(IMongoConfiguration), typeof(MongoConfiguration), config.IntegrationPointName);
                     Container.RegisterType<IMongoDBClient, MongoClientAdapter>(config.IntegrationPointName, new InjectionConstructor(config));
                 }
         }

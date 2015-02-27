@@ -51,6 +51,12 @@
                 "Password": "secret",
                 "AlwaysSendBasicAuthHeader": true
             }
+        ],
+        "MongoDB": [
+            {
+                "IntegrationPointName": "ExampleMongoDB",
+                "HostName": "localhost"
+            }
         ]
     }
 }
