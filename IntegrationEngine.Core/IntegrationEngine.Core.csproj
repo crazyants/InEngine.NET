@@ -153,6 +153,7 @@
     <Compile Include="Configuration\IMongoConfiguration.cs" />
     <Compile Include="Configuration\MongoConfiguration.cs" />
     <Compile Include="Mongo\MongoClientAdapter.cs" />
+    <Compile Include="Storage\IStringIdRepository.cs" />
     <Compile Include="Storage\MongoRepository.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@ namespace IntegrationEngine.Core.Storage
             : this()
         {
             MongoClient = mongoClient;
+            Db = MongoClient.GetDatabase("IntegrationEngine");
         }
 
         public IEnumerable<TItem> SelectAll<TItem>() where TItem : class, Model.IHasStringId

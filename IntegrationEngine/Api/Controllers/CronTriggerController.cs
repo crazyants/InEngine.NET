@@ -14,7 +14,7 @@ namespace IntegrationEngine.Api.Controllers
     {
         public CronTriggerController() : base() {}
 
-        public CronTriggerController(IElasticsearchRepository repository, IEngineScheduler engineScheduler)
+        public CronTriggerController(IStringIdRepository repository, IEngineScheduler engineScheduler)
             : base()
         {
             Repository = repository;

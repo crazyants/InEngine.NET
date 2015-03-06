@@ -12,14 +12,14 @@ namespace IntegrationEngine.Tests.Api
 {
     public class TriggerControllerBaseTest : TestBase<TriggerControllerBase<TriggerStub>>
     {
-        public Mock<IElasticsearchRepository> MockElasticRepo { get; set; }
+        public Mock<IStringIdRepository> MockElasticRepo { get; set; }
         public Mock<IEngineScheduler> MockEngineScheduler { get; set; }
         public string TriggerDocumentId = "foo";
 
         [SetUp]
         public void Setup()
         {
-            MockElasticRepo = new Mock<IElasticsearchRepository>();
+            MockElasticRepo = new Mock<IStringIdRepository>();
             Subject.Repository = MockElasticRepo.Object;
             MockEngineScheduler = new Mock<IEngineScheduler>();
             Subject.EngineScheduler = MockEngineScheduler.Object;

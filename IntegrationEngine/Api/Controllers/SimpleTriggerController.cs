@@ -17,7 +17,7 @@ namespace IntegrationEngine.Api.Controllers
     {
         public SimpleTriggerController() : base() {}
 
-        public SimpleTriggerController(IElasticsearchRepository repository, IEngineScheduler engineScheduler)
+        public SimpleTriggerController(IStringIdRepository repository, IEngineScheduler engineScheduler)
             : base()
         {
             Repository = repository;

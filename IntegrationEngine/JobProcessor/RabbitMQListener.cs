@@ -49,6 +49,7 @@ namespace IntegrationEngine.JobProcessor
             using (var channel = Connection.CreateModel())
             {
                 Consumer = new QueueingBasicConsumer(channel);
+                channel.QueueDeclare(RabbitMQConfiguration.QueueName, true, false, false, null);
                 channel.BasicConsume(RabbitMQConfiguration.QueueName, true, Consumer);
                 Log.Info(x => x("(Id={0}) Waiting for messages...", _listenerId));
 
