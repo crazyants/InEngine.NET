@@ -211,6 +211,7 @@ namespace IntegrationEngine
             var messageQueueListenerFactory = new MessageQueueListenerFactory(Container, IntegrationJobTypes, config);
             MessageQueueListenerManager = new MessageQueueListenerManager() {
                 MessageQueueListenerFactory = messageQueueListenerFactory,
+                ListenerTaskCount = EngineConfiguration.JobProcessorCount,
             };
         }
 

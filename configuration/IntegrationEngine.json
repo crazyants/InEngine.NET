@@ -1,4 +1,5 @@
 ﻿{
+    "JobProcessorCount": 2,
     "JobProcessorMessageQueueName": "DefaultRabbitMQ",
     "JobTriggerRepositoryName": "ExampleMongo",
     "WebApi": {
