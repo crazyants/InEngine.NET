@@ -170,6 +170,7 @@
     <Compile Include="Scheduler\IDispatcher.cs" />
     <Compile Include="Scheduler\IEngineSchedulerListener.cs" />
     <Compile Include="Scheduler\EngineSchedulerListener.cs" />
+    <Compile Include="Scheduler\ISchedulerRepository.cs" />
     <Compile Include="Scheduler\SimpleTrigger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EngineHost.cs" />

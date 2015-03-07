@@ -15,12 +15,12 @@ namespace IntegrationEngine.Api.Controllers
 {
     public class LogEventController : ApiController
     {
-        public IElasticsearchRepository Repository { get; set; }
+        public IStringIdRepository Repository { get; set; }
 
         public LogEventController()
         {}
 
-        public LogEventController(IElasticsearchRepository repository)
+        public LogEventController(IStringIdRepository repository)
             : this()
         {
             Repository = repository;
@@ -28,7 +28,8 @@ namespace IntegrationEngine.Api.Controllers
 
         public IEnumerable<LogEvent> GetAll()
         {
-            return Repository.SelectAll<LogEvent, DateTimeOffset>(x => x.Timestamp);
+            throw new NotImplementedException();
+            //return Repository.SelectAll<LogEvent, DateTimeOffset>(x => x.Timestamp);
         }
     }
 }

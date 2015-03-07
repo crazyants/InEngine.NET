@@ -11,19 +11,18 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using IntegrationEngine.Core.MessageQueue;
 
-
 namespace IntegrationEngine.Api.Controllers
 {
     public class HealthStatusController : ApiController
     {
         public IMailClient MailClient { get; set; }
         public IMessageQueueClient MessageQueueClient { get; set; }
-        public IElasticsearchRepository Repository { get; set; }
+        public IStringIdRepository Repository { get; set; }
 
         public HealthStatusController()
         {}
 
-        public HealthStatusController(IMailClient mailClient, IMessageQueueClient messageQueueClient, IElasticsearchRepository repository)
+        public HealthStatusController(IMailClient mailClient, IMessageQueueClient messageQueueClient, IStringIdRepository repository)
             : this()
         {
             MailClient = mailClient;

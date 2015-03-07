@@ -2,7 +2,7 @@
 
 namespace IntegrationEngine.Core.Storage
 {
-    public interface IMongoRepository : IStringIdRepository
+    public interface IStringIdRepository : IRepository<IHasStringId, string>
     {
     }
 }

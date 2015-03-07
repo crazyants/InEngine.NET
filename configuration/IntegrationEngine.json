@@ -27,10 +27,10 @@
         "RabbitMQ": [
             {
                 "IntegrationPointName": "DefaultRabbitMQ",
-                "QueueName": "myqueue",
+                "QueueName": "vagrant",
                 "ExchangeName": "amq.direct",
-                "UserName": "inengine",
-                "Password": "secret",
+                "UserName": "vagrant",
+                "Password": "vagrant",
                 "HostName": "localhost",
                 "VirtualHost": "/"
             }

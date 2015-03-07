@@ -12,7 +12,7 @@ namespace IntegrationEngine.Api
 {
     public class TriggerControllerBase<T> : ApiController where T: class, IIntegrationJobTrigger
     {
-        public IElasticsearchRepository Repository { get; set; }
+        public IStringIdRepository Repository { get; set; }
         public IEngineScheduler EngineScheduler { get; set; }
 
         public TriggerControllerBase()

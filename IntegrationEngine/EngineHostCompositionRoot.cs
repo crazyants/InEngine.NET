@@ -41,8 +41,7 @@ namespace IntegrationEngine
         public bool IsMessageQueueListenerManagerEnabled { get; set; }
         public string JobProcessorMessageQueueName { get; set; }
         public string JobTriggerRepositoryName { get; set; }
-        public IRepository<IntegrationEngine.Model.IHasStringId, string> Repository { get; set; }
-
+        public IStringIdRepository Repository { get; set; }
 
         public EngineHostCompositionRoot()
         {}
@@ -252,13 +251,14 @@ namespace IntegrationEngine
             if (DoesIntegrationPointConfigurationExist(EngineConfiguration.IntegrationPoints.Elasticsearch, JobTriggerRepositoryName))
             {
                 Container.RegisterType<IElasticsearchRepository, ElasticsearchRepository>(new InjectionConstructor(new ResolvedParameter<IElasticClient>(JobTriggerRepositoryName)));
-                Repository = Container.Resolve<IElasticsearchRepository>(); 
+                Repository = Container.Resolve<IElasticsearchRepository>();
             }
             if (DoesIntegrationPointConfigurationExist(EngineConfiguration.IntegrationPoints.Mongo, JobTriggerRepositoryName))
             {
                 Container.RegisterType<IMongoRepository, MongoRepository>(new InjectionConstructor(new ResolvedParameter<IMongoClient>(JobTriggerRepositoryName)));
-                Repository = Container.Resolve<IMongoRepository>(); 
+                Repository = Container.Resolve<IMongoRepository>();
             }
+            Container.RegisterInstance<IStringIdRepository>(Repository);
         }
 
         public void SetupRScriptRunner()
